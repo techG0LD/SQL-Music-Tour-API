@@ -2,29 +2,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('stages', {
-      stage_id: {
+    await queryInterface.createTable('stage_events', {
+      stage_event_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      
-      name: {
-        type: Sequelize.STRING,
-        allowNull:false
-      },
-      capacity: {
+      event_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false
       },
-      manager: {
-        type: Sequelize.STRING,
-        allowNull:false
+      stage_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('stages');
+    await queryInterface.dropTable('stage_events');
   }
 };

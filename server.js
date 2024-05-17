@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const {Sequelize} = require('sequelize')
 
+
 //CONTROLLERS
 const bandsController = require('./controllers/bands_controller')
 const eventsController = require('./controllers/events_controller')
@@ -14,9 +15,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 
-app.use('/bands', bandsController)
-app.use('/events', eventsController)
-app.use('/stages', stagesController)
+
 
 //SEQUELIZE CONNECTION
 // const sequelize = new Sequelize({
@@ -39,6 +38,11 @@ app.get('/', (req, res) => {
         message: 'Welcome to the Tour API'
     })
 })
+
+app.use('/bands', bandsController)
+app.use('/events', eventsController)
+app.use('/stages', stagesController)
+
 
 // LISTEN
 app.listen(process.env.PORT, () => {

@@ -1,4 +1,3 @@
-'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -9,27 +8,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-    
       name: {
         type: Sequelize.STRING,
-        allowNull:false
+        allowNull: false
       },
       genre: {
         type: Sequelize.TEXT,
-        allowNull:false
+        allowNull: false
       },
       available_start_time: {
         type: Sequelize.DATE,
-        allowNull:false
+        allowNull: false
       },
       end_time: {
         type: Sequelize.DATE,
-        allowNull:false
+        allowNull: false
       },
       founded: {
         type: Sequelize.INTEGER
-      },
-      
+      }
     });
   },
   async down(queryInterface, Sequelize) {

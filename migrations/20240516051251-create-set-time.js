@@ -9,26 +9,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-    
       event_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false
       },
       band_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false
       },
       stage_id: {
         type: Sequelize.INTEGER,
-        allowNull:false
+        allowNull: false
       },
       start_time: {
         type: Sequelize.DATE,
-        allowNull:false
+        allowNull: false
       },
       end_time: {
         type: Sequelize.DATE,
-        allowNull:false
+        allowNull: false
       }
     });
   },

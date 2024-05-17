@@ -1,7 +1,7 @@
 const events = require('express').Router()
 const db = require('../models')
 const {Op} = require('sequelize')
-const { Event } = db
+const { Event,MeetGreet,SetTime,Stage,Band,} = db
 
 events.get('/', async(req,res) => {
     try {
@@ -14,7 +14,8 @@ events.get('/', async(req,res) => {
                 }
             },
             order: [
-                ['date', 'ASC'], ['name', 'ASC']
+                ['date', 'ASC'],
+                 ['name', 'ASC']
             ],
             limit,
             offset
@@ -25,15 +26,82 @@ events.get('/', async(req,res) => {
     }
 })
 
-events.get('/:id', async (req,res) => {
+events.get('/:name', async (req,res) => {
+    const { event: eventName = ''} = req.query;
+    const where ={
+        name: {
+            [Op.iLike] : `%${eventName}%`
+            
+        }
+    }
     try {
         const foundEvent = await Event.findOne({
+            attributes: {
+                exclude: 'event_id'
+            },
             where: {
-                event_id: req.params.id
-            }
+                name: {
+                    [Op.iLike] : `%${req.params.name}%`
+                   
+                }
+            },
+            include: [
+                {
+                    model:MeetGreet,
+                    as: 'meetAndGreets',
+                    attributes:{
+                        exclude: ['meet_greet_id', ' event_id', 'band_id']
+                    },
+                    include: {
+                        attributes: {
+                            exclude:'band_id'
+                        },
+                        model:Band,
+                        as: 'band'
+                    }
+                },
+                {
+                    model:SetTime,
+                    as: 'setTimes',
+                    attributes:{
+                        exclude: ['set_time_id', ' event_id', 'band_id','stage_id']
+                    },
+                    include: [
+                       {
+                        model: Band,
+                        as: 'band',
+                        attributes: {
+                            exclude: 'band_id'
+                        }
+                       },
+                       {
+                        model: Stage,
+                        as: 'stage',
+                        attributes: {
+                            exclude: 'stage_id'
+                        }
+                       }
+                    ]
+                },
+                 {
+                    model: Stage,
+                    as: 'stages',
+                    attributes: {
+                        exclude: 'stage_id'
+                    },
+                    through: {
+                        attributes:[]
+                    }
+                 }
+            ],
+            order: [
+                [{model: MeetGreet, as: 'meetAndGreets'}, 'meet_start_time', 'ASC'],
+                [{model: SetTime, as: 'setTimes'}, 'start_time', 'ASC']
+            ]
         });
         res.status(200).json(foundEvent)
     }  catch(e) {
+        console.log(e)
         res.status(500).json(e)
     } 
 })

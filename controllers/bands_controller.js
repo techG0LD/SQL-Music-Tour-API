@@ -1,7 +1,7 @@
 const bands = require('express').Router()
 const db = require('../models')
 const {Op} = require('sequelize')
-const { Band } = db
+const { Band , MeetGreet, Event,SetTime} = db
 
 bands.get('/', async(req,res) => {
     const {name = '',limit=5,offset=0} = req.query
@@ -22,15 +22,67 @@ bands.get('/', async(req,res) => {
     }
 })
 
-bands.get('/:id', async (req,res) => {
+bands.get('/:name', async (req,res) => {
+    const {event: eventName = ''} = req.query
+    const where ={
+        name: {
+            [Op.iLike] : `%${eventName}%`
+            
+        }
+    }
     try {
         const foundBand = await Band.findOne({
+            attributes:{
+                exclude: 'band_id'
+            },
             where: {
-                band_id: req.params.id
-            }
-        });
+                name: {
+                    [Op.iLike] : `%${req.params.name}%`
+                    // band_id: req.params.id
+                }
+            },
+          
+            include: [
+                {
+                    model: MeetGreet,
+                    as: 'meetGreets',
+                    attributes:{
+                        exclude: ['meet_greet_id', ' event_id', 'band_id']
+                    },
+                    include: {
+                        model: Event,
+                        attributes: {
+                            exclude: ['event_id']
+                        },
+                        as: 'event',
+                        where
+                    }
+                },
+                {
+                    model: SetTime,
+                    as: 'setTimes',
+                    attributes:{
+                        exclude: ['set_time_id', ' event_id', 'band_id', 'stage_id']
+                    },
+                
+                    include: {
+                        model: Event,
+                        attributes: {   // hides them unwanted info
+                            exclude: ['event_id']
+                        },
+                        as: 'event',
+                        where
+                    }
+                }
+        ],
+        order: [
+            [{model: MeetGreet, as: 'meetGreets'}, {model:Event, as: 'event'}, 'date', 'ASC'],
+            [{model: SetTime, as: 'setTimes'}, {model:Event, as: 'event'}, 'date', 'ASC']
+        ]
+         });
         res.status(200).json(foundBand)
     }  catch(e) {
+        console.log(e)
         res.status(500).json(e)
     } 
 })
