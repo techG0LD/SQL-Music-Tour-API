@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
         foreignKey: 'stage_id',
         as: 'events',
-        through:StageEvent
+        through: StageEvent
       })
 
       Stage.hasMany(SetTime, {
@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Stage',
-    tableName: "stages",
+    tableName: 'stages',
     timestamps:false
   });
   return Stage;

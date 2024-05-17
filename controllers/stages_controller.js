@@ -29,6 +29,8 @@ stages.get('/', async(req,res) => {
 
 
 //show indv page
+
+
 stages.get('/:name', async (req,res) => {
     const {name: stageName = ''} = req.params
     try {
@@ -52,9 +54,9 @@ stages.get('/:name', async (req,res) => {
             //         attributes: []
             //     }
             // },
-            // order: [
-            //     [{model: Event, as: 'events'},'date','ASC']
-            // ]
+        //     order: [
+        //         [{model: Event, as: 'events'},'date','ASC']
+        //     ]
         });
         res.status(200).json(foundStage)
     }  catch(e) {
